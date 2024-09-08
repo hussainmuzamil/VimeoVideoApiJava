@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Video</title>
+</head>
+<body>
+<h2>Upload Video</h2>
+
+<!-- Input field for selecting video -->
+<input type="file" id="videoInput" accept="video/*" />
+<button onclick="sendFileSize()">Send File Size</button>
+
+<p id="status"></p>
+
+<script>
+    function sendFileSize() {
+        const videoInput = document.getElementById('videoInput');
+        const videoFile = videoInput.files[0];
+
+        if (!videoFile) {
+            document.getElementById("status").innerText = "Please select a video file.";
+            return;
+        }
+
+        const fileSize = videoFile.size; // Get the file size in bytes
+
+        // Create the request payload as JSON
+        const requestBody = {
+            fileSize: fileSize
+        };
+
+        // Send the file size to the backend
+        fetch('http://localhost:8080/upload', {  // Replace with your backend endpoint
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        })
+            .then(response => response.text())  // Parse the response as text
+            .then(data => {
+                // Display the response from the backend
+                document.getElementById("status").innerText = data;
+            })
+            .catch(error => {
+                document.getElementById("status").innerText = "Error: " + error.message;
+            });
+    }
+</script>
+</body>
+</html>
